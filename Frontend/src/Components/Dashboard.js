@@ -35,11 +35,15 @@ function Dashboard()  {
   //let name = ["prit","quyen","maisa","akshar","pratham"];
   let names = [] 
   let array = []
+
+  let videoCalls = []
+
+  let data;
   
   //console.log(data);
   const getInfo = async(e) => {
       try{
-        let data = await handleUserDashBoardApi(id);
+        data = await handleUserDashBoardApi(id);
         setFName(data.user.firstName);
         setLName(data.user.lastName);
         setEmail(data.user.email);
@@ -50,7 +54,7 @@ function Dashboard()  {
         for(let i = 0; i < friendids.length; i++) {
           let friend = await handleUserDashBoardApi(friendids[i].user2_ID);
           let friendName = friend.user.firstName + ' ' + friend.user.lastName
-          names.push(friendName)
+          names.push(friend.user.firstName)
         }
         setName(names)
 
@@ -117,11 +121,24 @@ function Dashboard()  {
   }
   const handleChat = async(e) => {
     navigate({
-      pathname: "/chat",
+      pathname: "/Chat",
       search: createSearchParams({
           senderid: id
       }).toString()
   });
+  }
+
+  const createVideoCall = () => {
+    var channelId = Math.floor(10000 + Math.random() * 90000)
+    for (let vc in videoCalls) {
+      if (vc.user != id) {
+        videoCalls.push({
+          user: id,
+          channel: channelId
+        })
+      }
+    }
+    call()
   }
 
   function friendsList() {
@@ -194,6 +211,7 @@ function Dashboard()  {
       <div className='left'>
         <img src={profile} alt="DP" className ="leftpic" />
         <text className='text'>{name[i]}</text>
+        <Button className="btn-help" onClick={createVideoCall}>📞</Button>
       </div>
     );
   }
@@ -211,7 +229,7 @@ function Dashboard()  {
         
         
         <Button className="btn-Screen" onClick={match}>Find Friend</Button>
-        <Button className="btn-chat" onClick={handleChat}>chat</Button>
+        <Button className="btn-chat" onClick={handleChat}>Chat</Button>
         <Button className="btn-Screen" onClick={call}>Call</Button>
         <Button className="btn-Screen" onClick={Translator}>Translator</Button>
         <Button className="btn-Screen" onClick={Logout}>
